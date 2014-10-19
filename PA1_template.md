@@ -14,7 +14,8 @@ between the period of October 1st and November 30th 2010.
 The data was read into R from the file "activity.csv".  "activity.csv" contained 17568 observations and consisted of three variables: two intergers, steps and interval, and a factor, date, with
 61 levels. The levels were saved as a vector and the class of the date variable was changed to character. 
 
-```{r Load data}
+
+```r
 setwd("D:/R files/Reproducible Research/prog 1")
 dat <- read.csv("activity.csv", sep = ",")
 datDate<- transform(dat, date = as.character(date))
@@ -23,7 +24,8 @@ dates <- levels(dat[,2])
 
 To aid in analysis the stringr library was loaded.
 
-```{r Load libraries}
+
+```r
 library(stringr)
 ```
 
@@ -33,7 +35,8 @@ library(stringr)
 
 Steps were counted for a total of 61 days.  
 
-```{r Data Processing}
+
+```r
         ##create empty data.frame
         stepsDay <-data.frame(matrix(vector(), 61, 2, 
                 dimnames=list(c(), c("Date", "Total steps"))),
@@ -50,20 +53,35 @@ Steps were counted for a total of 61 days.
 The histogram below shows the frequency of the total number of steps taken per a day.
 The large 0 step value was attributted to days were the steps data values were missing or not recorded.
 
-```{r Histogram of total steps per day}
+
+```r
         x <- seq(0, 25000, 1000)
         hist(stepsDay[,2],col = "red", breaks = x, 
              main = "Histogram of total steps per day", 
              xlab = "Total steps per day")
 ```
 
+![plot of chunk Histogram of total steps per day](figure/Histogram of total steps per day.png) 
+
 The median and mean total step counts were found to be:
 
-```{r Median and mean steps}
+
+```r
         medianSteps <- summary(stepsDay)[3,2]
         meanSteps <- summary(stepsDay)[4,2]
         medianSteps
+```
+
+```
+## [1] "Median :10395  "
+```
+
+```r
         meanSteps
+```
+
+```
+## [1] "Mean   : 9354  "
 ```
 
 
@@ -72,7 +90,8 @@ The median and mean total step counts were found to be:
 
 Each day was split into a total of 288 five minute intervals. The activity across each time interval was averaged to show the user's pattern of activity.
 
-```{r}
+
+```r
 ##create empty data.frame
 stepsTime <-data.frame(matrix(vector(), 288, 2, 
                 dimnames=list(c(), c("Time", "Average steps"))),
@@ -94,7 +113,8 @@ for (i in seq(0, 2355, 5)){
 
 The average number of steps taken was plotted against the time of day.
 
-```{r}
+
+```r
 ##Create a time series plot of 5 minute intervals(x) and
         ##the avg. no. of steps taken avg.ed across all days(y)
         plot(x = stepsTime[,1], y = stepsTime[,2], 
@@ -104,8 +124,11 @@ The average number of steps taken was plotted against the time of day.
              xlab = "Time interval")
 ```
 
+![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2.png) 
 
-```{r Time interval with maximum number of steps}
+
+
+```r
 ##Which of the 5 min intervals contains the maximum number of steps?
         maxSteps <- max(stepsTime[,2])
         maxTime <- stepsTime[which(stepsTime[,2] == maxSteps),1]
@@ -113,7 +136,7 @@ The average number of steps taken was plotted against the time of day.
         ##maxTime
 ```
 
-The maximium number of steps was found to be `r maxSteps` at `r maxTime`.
+The maximium number of steps was found to be 179.1311 at 835.
 
 
 
@@ -121,7 +144,8 @@ The maximium number of steps was found to be `r maxSteps` at `r maxTime`.
 
 The histogram above shows a large number of "0" step days.  Several of these days can be attributted to missing data values.  To give a more accurate snapshot of the user's activity these values were approximated from the average step data of the affected time intervals.
 
-```{r Finding missing values}
+
+```r
 ##find total no. missing values in dat, fill in w/ avg steps per interval
 filledIn <- dat
 
@@ -134,15 +158,15 @@ for (i in 1:17568){
         }
 }
 filledIn<- transform(filledIn, date = as.character(date))
-
 ```
 
-The number of missing values was found to be `r missing`.
+The number of missing values was found to be 2304.
 
 The new data was then used to create a new histogram, shown below.  Time intervals that reported "0" instead of Na were left unadulterated, resulting in a 2 "0" step days.
 
 
-```{r Histogram of filled in values}
+
+```r
 ##make a new histogram of total steps/day
 
 ##create empty data.frame
@@ -164,19 +188,34 @@ hist(stepsDay2[,2],col = "red", breaks = x,
      xlab = "Total steps per day")
 ```
 
+![plot of chunk Histogram of filled in values](figure/Histogram of filled in values.png) 
+
 The new median and mean were found to be:
 
-```{r New mean, median}
+
+```r
 ## return mean, median no. of steps/day
 summary(stepsDay2)[3,2]
+```
+
+```
+## [1] "Median :10395  "
+```
+
+```r
 summary(stepsDay2)[4,2]
+```
+
+```
+## [1] "Mean   :10581  "
 ```
 
 ##Weekday vs. weekend activity
 
 The completed data set was sorted according to day of the week.  The average steps for each time interval were then recalculated and plotted based on being either a weekday or a weekend.
 
-```{r sorting by day of the week}
+
+```r
 ##factor filledin via weekend vs weekdays
 filledInDate <- transform(filledIn, date = as.Date(date))
 dayWeek <- weekdays(filledInDate$date, abbreviate = F)
@@ -195,7 +234,8 @@ Thursday <- filledIn4$Thursday
 Friday <- filledIn4$Friday
 ```
 
-```{r Weekends}
+
+```r
 ## Weekend
 ## create weekend df
 
@@ -231,7 +271,8 @@ for (i in seq(0, 2355, 5)){
 }
 ```
 
-```{r Weekdays}
+
+```r
 ## Weekday
 ##create an empty df, weekday
 
@@ -304,7 +345,8 @@ for (i in seq(0, 2355, 5)){
 
 The plot below shows the average number of steps per vs time.  The weekdays show a large amount of activity in the morning.  The weekends show a greater amount of activity throughout the day.
 
-```{r plotting}
+
+```r
 ##plot weekend, weekday in a panel plot
 par(mfrow = c(2,1))
 
@@ -320,4 +362,6 @@ plot(x = weekend[,1], y = weekend[,2],
      ylab = "Average No. of steps taken",
      xlab = "Time interval")
 ```
+
+![plot of chunk plotting](figure/plotting.png) 
 
