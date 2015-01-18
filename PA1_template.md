@@ -1,7 +1,8 @@
+---
+output: pdf_document
+---
 # Reproducible Research: Peer Assessment 1
 Melissa Berkheimer
-
-output: html_document
 
 
 ##Abstract
